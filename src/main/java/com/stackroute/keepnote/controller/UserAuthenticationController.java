@@ -1,5 +1,18 @@
 package com.stackroute.keepnote.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import com.stackroute.keepnote.exception.UserNotFoundException;
+import com.stackroute.keepnote.model.User;
 import com.stackroute.keepnote.service.UserService;
 
 /*
@@ -11,7 +24,8 @@ import com.stackroute.keepnote.service.UserService;
  * is equivalent to using @Controller and @ResposeBody annotation.
  * Annotate class with @SessionAttributes this  annotation is used to store the model attribute in the session.
  */
-
+@RestController
+@SessionAttributes
 public class UserAuthenticationController {
 
 	/*
@@ -20,8 +34,10 @@ public class UserAuthenticationController {
 	 * keyword
 	 */
 
-	public UserAuthenticationController(UserService userService) {
+	private UserService userService;
 
+	public UserAuthenticationController(UserService userService) {
+		this.userService = userService;
 	}
 
 	/*
@@ -36,7 +52,21 @@ public class UserAuthenticationController {
 	 * 
 	 * This handler method should map to the URL "/login" using HTTP POST method
 	 */
-
+	@PostMapping("/login")
+	public ResponseEntity<?>  login(@RequestBody User user,HttpServletRequest req) {
+	try {
+			if(userService.validateUser(user.getUserId(), user.getUserPassword()))
+			{
+				req.getSession().setAttribute("loggedInUserId", user.getUserId());
+				HttpHeaders headers = new HttpHeaders();
+			    return new ResponseEntity<>(headers, HttpStatus.OK);
+			}
+		} catch (UserNotFoundException e) {
+			e.printStackTrace();
+		}
+		HttpHeaders headers = new HttpHeaders();
+	    return new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
+	}
 	/*
 	 * Define a handler method which will perform logout. Post logout, the user
 	 * session is to be destroyed. This handler method should return any one of the
@@ -45,5 +75,22 @@ public class UserAuthenticationController {
 	 * 
 	 * This handler method should map to the URL "/logout" using HTTP GET method
 	 */
-
+	@GetMapping("/logout")
+	public ResponseEntity<?>  logout(HttpServletRequest req) {
+		HttpHeaders headers = new HttpHeaders();
+		try {
+			System.out.println("user id from session: "+req.getSession().getAttribute("loggedInUserId"));
+				if(req.getSession().getAttribute("loggedInUserId")!=null)
+				{
+					return new ResponseEntity<>(headers, HttpStatus.OK);
+				}else
+				{
+					return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
+				}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	    return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
+	}
 }
