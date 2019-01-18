@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +38,7 @@ public class CategoryController {
 	 * Constructor-based autowiring) Please note that we should not create any
 	 * object using the new keyword
 	 */
+	private Log log = LogFactory.getLog(getClass());
 
 	private CategoryService categoryService;
 	
@@ -59,7 +62,7 @@ public class CategoryController {
 	 */
 	@PostMapping("/category")
 	public ResponseEntity<?> createCategory(@RequestBody Category category,HttpServletRequest request) {
-		
+		log.info("createCategory : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
 		if(loggedInUser== null)
@@ -77,6 +80,7 @@ public class CategoryController {
 			e.printStackTrace();
 			return new ResponseEntity<>(headers, HttpStatus.CONFLICT);
 		}
+		log.info("createCategory : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.CONFLICT);
 	}
 
@@ -95,7 +99,7 @@ public class CategoryController {
 	@DeleteMapping("/category/{categoryId}")
 	public ResponseEntity<?> deleteCategory(@PathVariable("categoryId") int categoryId
 													,HttpServletRequest request) {
-		
+		log.info("deleteCategory : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
 		if(loggedInUser== null)
@@ -110,6 +114,7 @@ public class CategoryController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("deleteCategory : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 	}
 
@@ -131,7 +136,7 @@ public class CategoryController {
 	public ResponseEntity<?> updateCategory(@RequestBody Category category,
 												@PathVariable("categoryId") int categoryId
 													,HttpServletRequest request) {
-		
+		log.info("updateCategory : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
 		if(loggedInUser== null)
@@ -152,6 +157,7 @@ public class CategoryController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("updateCategory : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.CONFLICT);
 	}
 	/*
@@ -168,7 +174,7 @@ public class CategoryController {
 	@GetMapping("/category")
 	@ResponseBody
 	public ResponseEntity<?> getAllCategoryByUserId(HttpServletRequest request) {
-		
+		log.info("getAllCategoryByUserId : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
 		if(loggedInUser== null)
@@ -181,6 +187,7 @@ public class CategoryController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("getAllCategoryByUserId : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.OK);
 	}
 }

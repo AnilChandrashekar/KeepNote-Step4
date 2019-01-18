@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +38,8 @@ public class NoteController {
 	 * autowiring) Please note that we should not create any object using the new
 	 * keyword
 	 */
-
+	private Log log = LogFactory.getLog(getClass());
+	
 	private NoteService noteService;
 
 	public NoteController(NoteService noteService) {
@@ -58,7 +61,7 @@ public class NoteController {
 	 */
 	@PostMapping("/note")
 	public ResponseEntity<?> createNote(@RequestBody Note note,HttpServletRequest request) {
-		System.out.println("inside createNote controller");
+		log.info("createNote : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
 		if(loggedInUser== null)
@@ -69,7 +72,7 @@ public class NoteController {
 			Reminder reminder = note.getReminder();
 			if(reminder!=null)
 			{
-				System.out.println("reminder id"+reminder.getReminderId());
+				log.info("reminder id"+reminder.getReminderId());
 			}
 			note.setNoteCreatedAt(new Date());
 			note.setCreatedBy(loggedInUser);
@@ -81,6 +84,7 @@ public class NoteController {
 			e.printStackTrace();
 			return new ResponseEntity<>(headers, HttpStatus.CONFLICT);
 		}
+		log.info("createNote : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.CONFLICT);
 	}
 
@@ -98,7 +102,7 @@ public class NoteController {
 	 */
 	@DeleteMapping("/note/{noteId}")
 	public ResponseEntity<?> deleteNote(@PathVariable("noteId") int noteId, HttpServletRequest request) {
-
+		log.info("deleteNote : ENDED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser = (String) request.getSession().getAttribute("loggedInUserId");
 		if (loggedInUser == null) {
@@ -112,6 +116,7 @@ public class NoteController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("deleteNote : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 	}
 
@@ -133,7 +138,7 @@ public class NoteController {
 	@PutMapping("/note/{noteId}")
 	public ResponseEntity<?> updateNote(@RequestBody Note note, @PathVariable("noteId") int noteId,
 			HttpServletRequest request) {
-
+		log.info("updateNote : ENDED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser = (String) request.getSession().getAttribute("loggedInUserId");
 		if (loggedInUser == null) {
@@ -151,6 +156,7 @@ public class NoteController {
 			e.printStackTrace();
 			return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 		}
+		log.info("updateNote : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 	}
 	/*
@@ -166,7 +172,7 @@ public class NoteController {
 	 */
 	@GetMapping("/note")
 	public ResponseEntity<?> getAllNotesByUserId(HttpServletRequest request) {
-		
+		log.info("getAllNotesByUserId : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
 		if(loggedInUser== null)
@@ -179,6 +185,7 @@ public class NoteController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("getAllNotesByUserId : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.OK);
 	}
 }

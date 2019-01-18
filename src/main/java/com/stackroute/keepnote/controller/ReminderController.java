@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +49,8 @@ public class ReminderController {
 	 * Constructor-based autowiring) Please note that we should not create any
 	 * object using the new keyword
 	 */
-
+	private Log log = LogFactory.getLog(getClass());
+	
 	private ReminderService reminderService;
 	
 	public ReminderController(ReminderService reminderService) {
@@ -70,7 +73,7 @@ public class ReminderController {
 	 */
 	@PostMapping("/reminder")
 	public ResponseEntity<?> createReminder(@RequestBody Reminder reminder,HttpServletRequest request) {
-		
+		log.info("createReminder : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
 		if(loggedInUser== null)
@@ -88,6 +91,7 @@ public class ReminderController {
 			e.printStackTrace();
 			return new ResponseEntity<>(headers, HttpStatus.CONFLICT);
 		}
+		log.info("createReminder : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.CONFLICT);
 	}
 	/*
@@ -105,7 +109,7 @@ public class ReminderController {
 
 	@DeleteMapping("/reminder/{reminderId}")
 	public ResponseEntity<?> deleteReminder(@PathVariable("reminderId") int reminderId, HttpServletRequest request) {
-
+		log.info("deleteReminder : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser = (String) request.getSession().getAttribute("loggedInUserId");
 		if (loggedInUser == null) {
@@ -119,6 +123,7 @@ public class ReminderController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("deleteReminder : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 	}
 	/*
@@ -139,7 +144,7 @@ public class ReminderController {
 	public ResponseEntity<?> updateReminder(@RequestBody Reminder reminder,
 												@PathVariable("reminderId") int reminderId
 													,HttpServletRequest request) {
-		
+		log.info("updateReminder : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
 		if(loggedInUser== null)
@@ -156,6 +161,7 @@ public class ReminderController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("updateReminder : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 	}
 	/*
@@ -171,7 +177,7 @@ public class ReminderController {
 	 */
 	@GetMapping("/reminder")
 	public ResponseEntity<?> getAllRemindersByUserId(HttpServletRequest request) {
-		
+		log.info("getAllRemindersByUserId : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
 		if(loggedInUser== null)
@@ -183,6 +189,7 @@ public class ReminderController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("getAllRemindersByUserId : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.OK);
 	}
 	/*
@@ -197,7 +204,7 @@ public class ReminderController {
 	 */
 	@GetMapping("/reminder/{reminderId}")
 	public ResponseEntity<?> getReminder(@PathVariable("reminderId") int reminderId,HttpServletRequest request) {
-		
+		log.info("getReminder : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
 		if(loggedInUser== null)
@@ -212,6 +219,7 @@ public class ReminderController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("getReminder : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 	}
 }

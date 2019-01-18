@@ -79,12 +79,12 @@
 		
 
 		<!-- dependency for slf4j-log4j12 to be added -->
-		<dependency>
+		<!-- <dependency>
 		    <groupId>org.slf4j</groupId>
 		    <artifactId>slf4j-log4j12</artifactId>
 		    <version>1.7.25</version>
 		    <scope>test</scope>
-		</dependency>
+		</dependency> -->
 		
 
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->

@@ -2,6 +2,8 @@ package com.stackroute.keepnote.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,8 @@ public class UserAuthenticationController {
 	 * autowiring) Please note that we should not create any object using the new
 	 * keyword
 	 */
-
+	private Log log = LogFactory.getLog(getClass());
+	
 	private UserService userService;
 
 	public UserAuthenticationController(UserService userService) {
@@ -54,6 +57,7 @@ public class UserAuthenticationController {
 	 */
 	@PostMapping("/login")
 	public ResponseEntity<?>  login(@RequestBody User user,HttpServletRequest req) {
+		log.info("login : STARTED");
 	try {
 			if(userService.validateUser(user.getUserId(), user.getUserPassword()))
 			{
@@ -65,6 +69,7 @@ public class UserAuthenticationController {
 			e.printStackTrace();
 		}
 		HttpHeaders headers = new HttpHeaders();
+		log.info("login : ENDED");
 	    return new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
 	}
 	/*
@@ -77,6 +82,7 @@ public class UserAuthenticationController {
 	 */
 	@GetMapping("/logout")
 	public ResponseEntity<?>  logout(HttpServletRequest req) {
+		log.info("logout : ENDED");
 		HttpHeaders headers = new HttpHeaders();
 		try {
 			System.out.println("user id from session: "+req.getSession().getAttribute("loggedInUserId"));
@@ -91,6 +97,7 @@ public class UserAuthenticationController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.info("logout : ENDED");
 	    return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
 	}
 }

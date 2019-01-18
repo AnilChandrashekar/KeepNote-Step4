@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,8 @@ public class UserController {
 	 * autowiring) Please note that we should not create an object using the new
 	 * keyword
 	 */
-
+	private Log log = LogFactory.getLog(getClass());
+	
 	private UserService userService;
 
 	public UserController(UserService userService) {
@@ -59,8 +62,9 @@ public class UserController {
 	 */
 	@PostMapping(value="/user/register")
 	public ResponseEntity<?> registerUser(@RequestBody User user) 
-			
-	{	HttpHeaders headers = new HttpHeaders();
+	{
+		log.info("registerUser : STARTED");
+		HttpHeaders headers = new HttpHeaders();
 		System.out.println("user id : "+user.getUserId());
 		try {
 			user.setUserAddedDate(new Date());
@@ -73,14 +77,10 @@ public class UserController {
 			e.printStackTrace();
 			return new ResponseEntity<>(headers, HttpStatus.CONFLICT);
 		}
+		log.info("registerUser : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.CREATED);
 	}
-	@GetMapping("/test")
-	public String test()
-	{
-		System.out.println("this is test get mapping");
-		return "Testing get service";
-	}
+	
 	/*
 	 * Define a handler method which will update a specific user by reading the
 	 * Serialized object from request body and save the updated user details in a
@@ -95,7 +95,7 @@ public class UserController {
 	@PutMapping(value="/user/{userId}")
 	public ResponseEntity<?> updateUser(@RequestBody User user,@PathVariable("userId") String userId,HttpServletRequest request) throws UserNotFoundException
 	{
-		System.out.println("user id : "+userId);
+		log.info("updateUser : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		try {
 			String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
@@ -114,6 +114,7 @@ public class UserController {
 			e.printStackTrace();
 			 return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 		}
+		log.info("updateUser : ENDED");
 		    return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 	}
 	/*
@@ -131,7 +132,7 @@ public class UserController {
 	@DeleteMapping(value="/user/{userId}")
 	public ResponseEntity<?> deleteUser(@PathVariable("userId") String userId, HttpServletRequest request) throws UserNotFoundException
 	{
-		System.out.println("user id : "+userId);
+		log.info("deleteUser : STARTED");
 		HttpHeaders headers = new HttpHeaders();
 		try {
 				String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
@@ -148,6 +149,7 @@ public class UserController {
 			e.printStackTrace();
 			return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 		}
+		log.info("deleteUser : ENDED");
 		    return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 	}
 	/*
@@ -163,7 +165,8 @@ public class UserController {
 	@GetMapping(value="/user/{userId}")
 	public ResponseEntity<?> getUser(@PathVariable("userId") String userId,HttpServletRequest request) throws UserNotFoundException
 	{
-		System.out.println("user id : "+userId);
+		log.info("getUser : STARTED");
+		log.info("user id : "+userId);
 		HttpHeaders headers = new HttpHeaders();
 		try {
 			String loggedInUser =(String) request.getSession().getAttribute("loggedInUserId");
@@ -180,6 +183,7 @@ public class UserController {
 			e.printStackTrace();
 		    return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 		}
+		log.info("getUser : ENDED");
 		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
 	}
 }
